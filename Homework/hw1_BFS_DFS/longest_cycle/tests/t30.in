@@ -1,0 +1,29 @@
+18
+addEdge 0 1
+addEdge 0 3
+addEdge 1 2
+addEdge 2 3
+addEdge 2 12
+addEdge 3 4
+addEdge 4 5
+addEdge 4 6
+addEdge 4 8
+addEdge 5 0
+addEdge 6 7
+addEdge 7 0
+addEdge 8 9
+addEdge 9 10
+addEdge 10 11
+addEdge 11 0
+addEdge 12 13
+addEdge 12 16
+addEdge 13 14
+addEdge 14 4
+addEdge 14 8
+addEdge 14 15
+addEdge 15 0
+addEdge 16 17
+addEdge 17 14
+addEdge 17 15
+printGraph
+longestCycleSCC
