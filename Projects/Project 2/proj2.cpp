@@ -6,9 +6,8 @@ using namespace std;
 
 bool isPalindrome(string S)
 {
-
     int size = S.length();
-    vector<vector<int>> P(S.length());
+    vector<vector<int> > P(S.length());
 
     for (size_t i = 0; i < size; i++)
     {
@@ -16,48 +15,27 @@ bool isPalindrome(string S)
         P[i][i] = 1;
     }
 
-    int count = 0;
-    int s_count = size;
-    int x = 1;
-
-    for (size_t i = 0; i < size; i++)
+    for (int i = 0; i < size - 1; ++i)
     {
-        for (size_t j = 0; j < s_count - 1; j++)
+        if (S[i] == S[i + 1])
         {
-
-            if (S[j] == S[j + x])
-            {
-                P[j][j + x] = 1;
-            }
-            // else if (P[j + 1][j + x - 1] == 1 && S[j] == S[j + x])
-            // {
-            //     P[j][j + x] = 1;
-            // }
-            // else
-            // {
-            //     P[j][j + x] = 0;
-            // }
-
-            // cout<< j << " "<<j+x;
-            // cout<<endl;
+            P[i][i + 1] = 1;
         }
-        s_count--;
-        x++;
-
-        // cout << endl;
     }
 
-    // for (size_t i = 0; i < size; i++)
-    // {
-    //     for (size_t j = 0; j < size; j++)
-    //     {
-    //         cout << P[i][j] << " ";
-    //     }
+    for (int k = 3; k <= size; ++k)
+    {
+        for (int i = 0; i < size - k + 1; ++i)
+        {
+            int j = i + k - 1;
+            if (P[i + 1][j - 1] && S[i] == S[j])
+            {
+                P[i][j] = 1;
+            }
+        }
+    }
 
-    //     cout << endl;
-    // }
-
-    if (P[0][size-1] == 1)
+    if (P[0][size - 1] == 1)
     {
         return true;
     }
@@ -65,11 +43,23 @@ bool isPalindrome(string S)
     return false;
 }
 
-void P_Cuts(string S){
+void printPalindrome(int x, string S, vector<int> B)
+{
+
+    if (B[x] != -1)
+    {
+        printPalindrome(B[x], S, B);
+    }
+    cout << S.substr(B[x] + 1, (x - B[x]));
+    cout << endl;
+}
+
+void P_Cuts(string S)
+{
 
     int size = S.length();
 
-    vector<int> C(size);
+    vector<int> C(size, 999);
     vector<int> B(size);
 
     C[0] = 0;
@@ -77,25 +67,37 @@ void P_Cuts(string S){
 
     for (size_t i = 1; i < size; i++)
     {
-        int trim = 0;
+
         string SC = S;
-        
-        SC.substr(0, i);
-        
-        cout<<SC;
 
-        // for (size_t j = 0; j <= i; j++)
-        // {
-        //     SC.erase(0, 1);
-        //     cout<<SC;
-        //     trim++;
-        //     cout<<endl;
-        // }
-        cout<<endl;
-        
+        SC = SC.substr(0, i + 1);
+
+        for (size_t j = 0; j <= i; j++)
+        {
+
+            if (isPalindrome(SC) == true)
+            {
+
+                if (j - 1 == -1)
+                {
+                    C[i] = 0;
+                    B[i] = -1;
+                }
+                else
+                {
+                    if (C[i] > C[j - 1] + 1)
+                    {
+                        C[i] = C[j - 1] + 1;
+                        B[i] = j - 1;
+                    }
+                }
+            }
+
+            SC = SC.substr(1);
+        }
     }
-    
 
+    printPalindrome(size - 1, S, B);
 }
 
 int main()
@@ -104,6 +106,7 @@ int main()
     cin >> S;
 
     P_Cuts(S);
+    // cout<<isPalindrome(S);
 
     return 0;
 }
