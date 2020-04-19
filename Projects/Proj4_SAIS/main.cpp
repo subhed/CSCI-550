@@ -8,6 +8,43 @@
 #include <utility>
 using namespace std;
 
+bool compareLMS(int F, int S, vector<int> &T, vector<int> &t)
+{
+
+    int p1 = -1;
+    int p2 = -1;
+
+    int pt1 = F, pt2 = S;
+
+    // cout << "\n F:" << F << " S:" << S << " ";
+
+    // cout<<"\n"<< p1<<" --> "<<t[pt1]<<"\n";
+
+    while ((p1 != 0 || t[pt1] != 1) && (p2 != 0 || t[pt2] != 1) && pt1 < T.size() && pt2 < T.size())
+    {
+        // cout << T[pt1] << "==" << T[pt2] << "\n";
+
+        if (T[pt1] != T[pt2] || t[pt1] != t[pt2])
+        {
+            return false;
+        }
+
+        p1 = t[pt1];
+        pt1 = pt1 + 1;
+        p2 = t[pt2];
+        pt2 = pt2 + 1;
+    }
+    if (T[pt1] != T[pt2] || t[pt1] != t[pt2])
+    {
+        return false;
+    }
+
+    // cout << "Pt: " << pt1 << "\n";
+    // cout << " Pt2: " << pt2 << "\n";
+
+    return true;
+}
+
 int main()
 {
 
@@ -66,6 +103,12 @@ int main()
         }
     }
 
+    // for (size_t i = 0; i < t.size(); i++)
+    // {
+    //     cout<< t[i]<< " ";
+    // }
+    // cout<<endl;
+
     vector<int> lms(Tint.size());
 
     for (size_t i = Tint.size() - 1; i > 0; --i)
@@ -82,11 +125,11 @@ int main()
 
     // for (size_t i = 0; i < lms.size(); i++)
     // {
-    //     cout<<lms[i]<<" ";
+    //     cout<<i<<" " <<lms[i]<<" \n";
     // }
 
     // cout<<endl;
-    
+
     // Max Element in Array
 
     int maxi = *max_element(Tint.begin(), Tint.end());
@@ -183,9 +226,50 @@ int main()
         }
     }
 
+    // for (size_t i = 0; i < SA.size(); i++)
+    // {
+    //     cout << SA[i] << " ";
+    // }
+    // cout << endl;
+
+    int prev = -1, name = -1;
+    vector<int> N(Tint.size(), -1);
+
     for (size_t i = 0; i < SA.size(); i++)
     {
-        cout << SA[i] << " ";
+        if (lms[SA[i]] == 1)
+        {
+            // cout<< "SA:"<<SA[i]<<" PREV:"<<prev<<"\n";
+            if (prev == -1)
+            {
+                name = name + 1;
+                N[SA[i]] = name;
+                prev = SA[i];
+            }
+            else
+            {
+                // cout<<compareLMS(prev, SA[i], Tint, t)<<"\n";
+                if (compareLMS(prev, SA[i], Tint, t) == true)
+                {
+                    N[SA[i]] = name;
+                }
+                else
+                {
+                    name = name + 1;
+                    N[SA[i]] = name;
+                }
+
+                prev = SA[i];
+            }
+        }
+    }
+
+    for (size_t i = 0; i < N.size(); i++)
+    {
+        if (N[i] != -1)
+        {
+            cout << N[i] << " ";
+        }
     }
     cout << endl;
 
