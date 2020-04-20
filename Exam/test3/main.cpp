@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using std::cerr;
 using std::cin;
@@ -25,7 +26,7 @@ void findReverse(const string &S, string &revS);
 
 //Test 3:
 //Problem 1
-int occRepeated(const string &X, int k, int m)
+int occRepeated(const string &X, int m, int k)
 {
 
 	string str = X;
@@ -43,7 +44,7 @@ int occRepeated(const string &X, int k, int m)
 	for (size_t i = 0; i < LCP.size(); i++)
 	{
 
-		if (LCP[i] >= k)
+		if (LCP[i] >= m)
 		{
 			if (L == 0 && R == 0)
 			{
@@ -55,12 +56,12 @@ int occRepeated(const string &X, int k, int m)
 				R = R + 1;
 			}
 		}
-		else if (LCP[i] < k && L != 0 && R != 0)
+		else if (LCP[i] < m && L != 0 && R != 0)
 		{
 
 			occur = R - L + 2;
 
-			if (occur >= m)
+			if (occur >= k)
 			{
 				gOc = gOc + 1;
 			}
@@ -77,7 +78,7 @@ int occRepeated(const string &X, int k, int m)
 	}
 
 	occur = R - L + 2;
-	if (occur >= m)
+	if (occur >= k)
 	{
 		gOc = gOc + 1;
 	}
@@ -125,6 +126,67 @@ bool isSpecificForm(const string &X, const string &Y)
 //Problem 3
 void maxUniquePal(const string &S, int m)
 {
+	int Fl = -1;
+	string Final;
+
+	int n = S.size(), j = 0, k = 0, x = 0;
+
+	string SR = S;
+	string T = S;
+
+	reverse(SR.begin(), SR.end());
+	T.append("#");
+	T.append(SR);
+	T.append("$");
+
+	vector<int> SA(T.size());
+	calculateSA(T, SA);
+
+	vector<int> LCP(T.size());
+	calculateLCP(T, SA, LCP);
+
+	for (size_t i = 0; i < LCP.size(); i++)
+	{
+		if (LCP[i] >= m)
+		{
+			x = LCP[i];
+			if (LCP[i + 1] < x && LCP[i - 1] < x)
+			{
+				if ((SA[i] < n && SA[i - 1] > n) || (SA[i - 1] < n && SA[i] > n))
+				{
+
+					if (SA[i] < n)
+					{
+						j = SA[i];
+						k = SA[i - 1];
+					}
+					else if (SA[i - 1] < n)
+					{
+						k = SA[i];
+						j = SA[i - 1];
+					}
+					int K1 = (2 * S.size()) - j - x + 1;
+
+					if (k == K1)
+					{
+						if (Fl < x)
+						{
+							Fl = x;
+							Final = T.substr(k, x);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (Fl != -1)
+	{
+		cout << Final << "\n";
+	}
+	else
+	{
+		cout << "No solution."<<"\n";
+	}
 }
 
 int main()
@@ -313,4 +375,3 @@ void findReverse(const string &X, string &revX)
 	}
 }
 
-/******************* End of provided functions *************/
